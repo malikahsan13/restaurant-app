@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +15,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    //return "Hello world";
     return view('welcome');
+});
+
+Route::get("/getName/{name}",function($name){
+    return "Hello ".$name;
+});
+Route::middleware(['cors'])->group(function () {
+    Route::get("/getProducts",[ProductController::class, "index"]);
 });
