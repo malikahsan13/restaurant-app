@@ -23,19 +23,21 @@ jobs:
         name: Deploy to server
         with:
           script: "cd /var/www/html && ./.scripts/deploy.sh"
+          fetch-depth: 0
     
-      - name: Initialize Pipeline
-        uses: mshick/add-pr-comment@v1
+      - name: Generate Version
+        id: generate_version
+        uses: anothrNick/github-tag-action@1.52.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          message: "@${{ github.actor }} GitHub Actions has started building this code. Check status at 'https://github.com/${{ github.repository }}/commit/${{ github.event.pull_request.head.sha }}/checks'"
-          allow-repeats: false
+          WITH_V: true
+          DRY_RUN: true
+          DEFAULT_BUMP: "patch"
+        
       - name: Generate Vars
         id: generate_vars
         run: |
-          # Just Tag
-          IMAGE_TAG=pr-${{ github.event.pull_request.number }}-$(echo ${{ github.event.pull_request.head.sha }} | cut -c1-8)
+          IMAGE_TAG=${{ steps.generate_version.outputs.new_tag }}
           # Just Image name
           IMAGE_NAME=${{ github.repository }}
           #Image ID= Name + Tag
@@ -53,7 +55,7 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v1 
         with:
-          username: ${{ secrets.DOCKERHUB_USER }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
       - name: Echo Output
@@ -73,38 +75,26 @@ jobs:
           cache-to: type=inline
           tags: ${{ env.IMAGE }}
 
-      - name: Comment on PR
-        uses: mshick/add-pr-comment@v1
+      - name: Push tag
+        uses: anothrNick/github-tag-action@1.52.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          message: '@${{ github.actor }} Image is available for testing. `docker pull ${{ env.IMAGE }}`'
-          allow-repeats: false
+          WITH_V: true
+          DEFAULT_BUMP: "patch"
 
-      - name: Notify Failure
-        if: failure()
-        uses: mshick/add-pr-comment@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          message: '@${{ github.actor }} The pipeline failed! You better fix it before anyone else finds out! [Build](https://github.com/${{ github.repository }}/commit/${{ github.event.pull_request.head.sha }}/checks) has Failed!'
-          allow-repeats: false
       # - name: Deploy
       #   uses: steebchen/kubectl@v2.0.0
       #   with:
       #     config: ${{ secrets.KUBE_CONFIG }}
-      #     command: set image -n dev deployment/golang-deployment golang=${{ env.IMAGE }}
+      #     command: set image -n prod deployment/golang-deployment golang=${{ env.IMAGE }}
 
       # - name: Notify Slack
       #   uses: 8398a7/action-slack@v3
-      #   if: always()
+      #   if: always() 
       #   with:
       #     status: ${{ job.status }}
       #     fields: repo,author,action,eventName,ref,workflow
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      # SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
-
-    
-# Footer
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+#Footer
