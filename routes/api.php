@@ -19,7 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get("test",function(){
-    return "m herers";
+    return "This is test method";
 });
 
 Route::get("getProducts",[ProductController::class, "index"]);
