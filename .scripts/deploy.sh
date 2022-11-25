@@ -22,9 +22,10 @@ echo "Deploying application ..."
     docker exec ${APP_NAME} npm run production
 
     # Migrate database
-    # docker exec ${APP_NAME} php artisan migrate --force
+    docker exec ${APP_NAME} php artisan migrate --force
+    docker exec ${APP_NAME} php artisan db:seed --force
 # Exit maintenance mode
 docker exec ${APP_NAME} php artisan up
-
+docker exec ${APP_NAME} php artisan serve --host=0.0.0.0
 echo "Application deployed!"
 Footer
