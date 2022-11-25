@@ -22,4 +22,8 @@ Route::get("test",function(){
     return "This is test method";
 });
 
+Route::get("getDevName",function(){
+    return "My Name is Malik Muhammad Ahsan";
+});
+
 Route::get("getProducts",[ProductController::class, "index"]);
