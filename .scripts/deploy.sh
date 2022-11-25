@@ -1,33 +1,30 @@
-#!/bin/bash
+
+#!/bin/sh
 set -e
 
-echo "Deployment started ..."
+APP_NAME=$(grep DOCKER_APP_NAME .env | cut -d '=' -f2)-app
 
-# Enter maintenance mode or return true
-# if already is in maintenance mode
-(php artisan down) || true
+echo "Deploying application ..."
 
-# Pull the latest version of the app
-git pull origin main
+# Enter maintenance mode
+(docker exec ${APP_NAME} php artisan down) || true
+    # Update codebase
+    # git fetch origin production
+    # git reset --hard origin/production
 
-# Install composer dependencies
-composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+    # Install dependencies based on lock file
+    docker exec ${APP_NAME} /usr/local/bin/composer install
 
-# Clear the old cache
-php artisan clear-compiled
+    # Installing any npm dependencies
+    docker exec ${APP_NAME} npm install
 
-# Recreate cache
-php artisan optimize
+    # Compiling assets
+    docker exec ${APP_NAME} npm run production
 
-# Compile npm assets
-#npm run prod
-
-# Run database migrations
-#php artisan migrate --force
-
+    # Migrate database
+    # docker exec ${APP_NAME} php artisan migrate --force
 # Exit maintenance mode
-php artisan up
+docker exec ${APP_NAME} php artisan up
 
-php artisan serve --host=0.0.0.0
-
-echo "Deployment finished!"
+echo "Application deployed!"
+Footer
