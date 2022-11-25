@@ -27,4 +27,7 @@ php artisan optimize
 
 # Exit maintenance mode
 php artisan up
+
+php artisan serve --host=0.0.0.0
+
 echo "Deployment finished!"
