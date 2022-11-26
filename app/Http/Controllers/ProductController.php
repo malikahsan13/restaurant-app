@@ -18,6 +18,41 @@ class ProductController extends Controller
         return $products;
     }
 
+    public function getProducts()
+    {
+        $products = [
+            {
+                "id": 1,
+                "name": "Iphone 4",
+                "description": "Description of Iphone 4",
+                "slug": "iphone-4"
+                "price": 149.99
+            },
+            {
+                "id": 2,
+                "name": "Iphone 5",
+                "description": "Description of Iphone 5",
+                "slug": "iphone-5"
+                "price": 249.99
+            },
+            {
+                "id": 3,
+                "name": "Iphone 6",
+                "description": "Description of Iphone 6",
+                "slug": "iphone-6"
+                "price": 349.99
+            },
+            {
+                "id": 4,
+                "name": "Iphone 7",
+                "description": "Description of Iphone 7",
+                "slug": "iphone-7"
+                "price": 499.99
+            },
+        ];
+        return $products;
+    }
+
     /**
      * Show the form for creating a new resource.
      *
