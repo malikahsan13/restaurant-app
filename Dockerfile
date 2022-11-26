@@ -10,4 +10,4 @@ COPY . .
 
 RUN composer install
 
-CMD bash -c "php artisan serve --host 0.0.0.0"
+CMD  "php artisan serve --host 0.0.0.0"
