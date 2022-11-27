@@ -23,5 +23,6 @@ Route::get("/getName/{name}",function($name){
     return "Hello ".$name;
 });
 Route::middleware(['cors'])->group(function () {
-    Route::get("/getProducts",[ProductController::class, "index"]);
+    Route::get("/getProductsfromDB",[ProductController::class, "index"]);
+    Route::get("/getProducts",[ProductController::class, "getProducts"]);
 });

@@ -26,6 +26,6 @@ Route::get("getDevName",function(){
     return "My Name is Malik Muhammad Ahsan and I am Sr. Software Engineer";
 });
 
-Route::get("getProductsfromDB",[ProductController::class, "index"]);
+// Route::get("getProductsfromDB",[ProductController::class, "index"]);
 
-Route::get("getProducts",[ProductController::class, "getProducts"]);
+// Route::get("getProducts",[ProductController::class, "getProducts"]);

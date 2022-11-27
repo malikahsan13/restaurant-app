@@ -50,7 +50,7 @@ class ProductController extends Controller
                 "price"=> 499.99
             ]
             );
-        return Response::json($products);
+        return $products;
     }
 
     /**
