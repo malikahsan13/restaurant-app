@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restaurant-app-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      tier: backend
+      app: restaurant-app
+  template:
+    metadata:
+      labels:
+        tier: backend
+        app: restaurant-app
+    spec:
+      containers:
+      - name: backend
+        image: malikahsan13/restaurant-app:v0.0.14
+        ports:
+        - containerPort: 8000
+          name: tcp
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  type: NodePort
+  selector:
+    tier: backend
+    app: restaurant-app
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
+    nodePort: 32000
